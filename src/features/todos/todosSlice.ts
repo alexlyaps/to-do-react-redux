@@ -20,8 +20,12 @@ export const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    addTask(state, action: PayloadAction<ToDo>) {
-      state.push(action.payload);
+    addTask(state, action: PayloadAction<string>) {
+      state.push({
+        id: state[state.length - 1].id + 1,
+        text: action.payload,
+        completed: false,
+      });
     },
     toggleTask(state, action: PayloadAction<number>) {
       const task = state.find((task) => task.id === action.payload);
@@ -30,6 +34,6 @@ export const todosSlice = createSlice({
   },
 });
 
-export const { addTask } = todosSlice.actions;
+export const { addTask, toggleTask } = todosSlice.actions;
 export const selectTodos = (state: RootState) => state.todos;
 export default todosSlice.reducer;
