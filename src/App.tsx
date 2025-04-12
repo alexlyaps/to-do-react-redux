@@ -1,41 +1,31 @@
-import { ThemeProvider } from "@/components/theme-provider";
-import { useState, ReactNode } from "react";
+// import React from "react";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
 
-type PanelProps = {
-  title: string;
-  children: ReactNode;
-  isActive: boolean;
-  onShow: () => void;
-};
+function App() {
+  const tasks = useAppSelector((state) => state.todos);
+  const dispatch = useAppDispatch();
 
-function Panel({ title, children, isActive, onShow }: PanelProps) {
+  const handleToggle = () => {
+    dispatch();
+  };
+
   return (
-    <section className="panel">
-      <h3>{title}</h3>
-      {isActive ? <p>{children}</p> : <button onClick={onShow}>Show</button>}
-    </section>
+    <div className="flex-center flex-col h-screen">
+      <h1 className="text-lg">TODO APP</h1>
+      <ul className="list-non e">
+        {tasks.map((item) => (
+          <li>
+            <input
+              type="checkbox"
+              value={item.completed ? "" : "checked"}
+              onClick={handleToggle}
+            />{" "}
+            {item.text}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
-export default function App() {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Panel
-        title="about"
-        isActive={activeIndex === 0}
-        onShow={() => setActiveIndex(0)}
-      >
-        Children of About
-      </Panel>
-      <Panel
-        title="Et"
-        isActive={activeIndex === 1}
-        onShow={() => setActiveIndex(1)}
-      >
-        Children of ET
-      </Panel>
-    </ThemeProvider>
-  );
-}
+export default App;

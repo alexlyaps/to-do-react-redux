@@ -125,3 +125,9 @@ p:hover {
   /* scale: 1.005; */
   transition: all 500ms ease-in-out;
 }
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
