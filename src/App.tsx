@@ -1,51 +1,35 @@
-import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { addTask, toggleTask } from "@/features/todos/todosSlice.js";
+import { useGetTodosQuery } from "@/services/todos.ts";
+
+import Task from "@/components/ui/task.tsx";
+import AddTask from "@/components/ui/addtask.tsx";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 function App() {
-  const [newTask, setNewTask] = useState("");
-
-  const tasks = useAppSelector((state) => state.todos);
-  const dispatch = useAppDispatch();
-
-  const handleToggle = (id: number) => {
-    dispatch(toggleTask(id));
-  };
-
-  const handleAddTask = () => {
-    dispatch(addTask(newTask));
-    setNewTask("");
-  };
+  const { data, error, isLoading } = useGetTodosQuery();
 
   return (
-    <div className="flex-center flex-col h-screen gap-4">
-      <h1 className="text-lg">TODO APP</h1>
-      <ul className="list-none">
-        {tasks.map((item) => (
-          <li>
-            <input
-              type="checkbox"
-              checked={item.completed}
-              onClick={() => handleToggle(item.id)}
-            />
-            {item.text}
-          </li>
-        ))}
+    <Stack direction="column" spacing={1} alignItems="center">
+      <Typography variant="h3" component="h1">
+        Dodo App
+      </Typography>
+      <AddTask />
+      <ul>
+        {isLoading && <li>Loading...</li>}
+        {error && <li>Error loading tasks</li>}
+
+        {data && data.length > 0
+          ? data.map(
+              (item) =>
+                item && (
+                  <li key={item.id}>
+                    <Task item={item} />
+                  </li>
+                )
+            )
+          : !isLoading && <li>No tasks found</li>}
       </ul>
-      <div className="flex gap-3">
-        <label htmlFor="task">NEW TASK</label>
-        <input
-          name="task"
-          type="text"
-          className="border"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        />
-        <button className="border px-3" onClick={handleAddTask}>
-          ADD
-        </button>
-      </div>
-    </div>
+    </Stack>
   );
 }
 
